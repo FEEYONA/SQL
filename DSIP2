@@ -1,4 +1,7 @@
+# Link to project: https://discuss.codecademy.com/t/data-science-independent-project-2-explore-a-sample-database/419945
+
 #### BASIC REQUIREMENTS
+
 ## Which tracks appeared in the most playlists? how many playlist did they appear in?
 SELECT tracks.Name, COUNT(playlist_track.PlaylistId) AS 'Number of playlists appeared in'
 FROM playlist_track
@@ -8,3 +11,44 @@ GROUP BY playlist_track.TrackId
 ORDER BY 2 DESC
 LIMIT 50;
 
+## Which track generated the most revenue? 
+SELECT tracks.Name, sum(invoice_items.UnitPrice) AS 'Revenue generated'
+FROM invoice_items
+	JOIN tracks
+	ON tracks.TrackId = invoice_items.TrackId
+GROUP BY invoice_items.TrackId
+ORDER BY 2 DESC
+LIMIT 10;
+
+## Which album generated the most revenue? 
+SELECT albums.Title, sum(tracks.UnitPrice) AS 'Revenue generated'
+FROM tracks
+	JOIN albums
+	ON albums.AlbumId = tracks.AlbumId
+GROUP BY tracks.AlbumId
+ORDER BY 2 DESC
+LIMIT 10;
+
+## Which genre generated the most revenue?
+SELECT genres.Name, sum(tracks.UnitPrice) AS 'Revenue generated'
+FROM tracks
+	JOIN genres
+	ON genres.GenreId = tracks.GenreId
+GROUP BY tracks.GenreId
+ORDER BY 2 DESC
+LIMIT 10;
+
+## Which countries have the highest sales revenue?
+SELECT BillingCountry, SUM(Total) AS 'Sales revenue'
+FROM invoices
+GROUP BY BillingCountry
+ORDER BY 2 DESC
+LIMIT 10;
+
+## What percent of total revenue does each country make up?
+SELECT BillingCountry,
+ROUND((SUM(Total)/(SELECT SUM(Total) FROM invoices))*100, 3) AS 'Percent of Total Revenue'
+FROM invoices
+GROUP BY BillingCountry
+ORDER BY 2 DESC
+LIMIT 10;
