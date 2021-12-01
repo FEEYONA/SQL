@@ -67,6 +67,8 @@ SELECT AVG(Total) as 'Average revenue per sale',
 	SUM(Total) as 'Total sale'
 FROM invoices
 
+#### INTERMEDIATE CHALLENGE
+
 ## Do longer or shorter length albums tend to generate more revenue?
 WITH album_length AS (
 	SELECT albums.AlbumId, albums.Title, 
@@ -87,3 +89,17 @@ ON tracks.TrackId = invoice_items.TrackId
 GROUP BY tracks.AlbumId
 ORDER BY Album_revenue DESC
 LIMIT 30
+
+## Is the number of times a track appear in any playlist a good indicator of sales?
+WITH track_count AS (
+	SELECT TrackId, COUNT(PlaylistId) AS 'playlist_count'
+	FROM playlist_track
+	GROUP BY TrackId
+)
+SELECT track_count.TrackId, track_count.TrackId, 
+	AS 'Avg revenue'
+FROM track_count
+JOIN invoice_items
+ON track_count.TrackId = invoice_items.TrackId
+GROUP BY track_count.playlist_count
+ORDER BY track_count.playlist_count DESC
