@@ -63,3 +63,27 @@ GROUP BY customers.SupportRepId
 ORDER BY 4 DESC;
 
 ## What is the average revenue for each sale, and what is their total sale?
+SELECT AVG(Total) as 'Average revenue per sale',
+	SUM(Total) as 'Total sale'
+FROM invoices
+
+## Do longer or shorter length albums tend to generate more revenue?
+WITH album_length AS (
+	SELECT albums.AlbumId, albums.Title, 
+	SUM(Milliseconds)/1000/60 AS 'album_length_in_minutes'
+	FROM tracks
+	JOIN albums
+	ON albums.AlbumId = tracks.AlbumId
+	GROUP BY albums.AlbumId
+	)
+SELECT tracks.AlbumId, album_length.Title,
+	album_length.album_length_in_minutes,
+	SUM(invoice_items.UnitPrice) AS 'Album_revenue'
+FROM album_length
+JOIN tracks
+ON tracks.AlbumId = album_length.AlbumId
+JOIN invoice_items
+ON tracks.TrackId = invoice_items.TrackId
+GROUP BY tracks.AlbumId
+ORDER BY Album_revenue DESC
+LIMIT 30
